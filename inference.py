@@ -26,7 +26,9 @@ def log_end(success, steps, score, rewards):
 
 
 async def main():
-    client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
+    client = None
+    if API_KEY:
+        client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
     env = EmailEnv("medium")
 
     rewards = []
