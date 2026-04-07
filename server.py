@@ -16,3 +16,7 @@ async def reset():
 async def step(action: Action):
     result = await env.step(action)
     return result.model_dump()
+
+@app.get("/state")
+async def state():
+    return env.state()
