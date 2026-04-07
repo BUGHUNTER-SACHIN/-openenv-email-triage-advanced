@@ -62,7 +62,7 @@ class EmailEnv:
             next_email = Email(**self.emails[self.index])
 
         return StepResult(
-            observation=Observation(email=next_email, step=self.step_count),
+            observation=Observation(email=next_email , step=self.step_count),
             reward=reward,
             done=self.done,
         )
