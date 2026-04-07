@@ -6,6 +6,10 @@ app = FastAPI()
 env = EmailEnv()
 
 
+@app.get("/")
+def home():
+    return {"status": "Email Env Running"}
+
 @app.post("/reset")
 async def reset():
     result = await env.reset()
