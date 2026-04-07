@@ -1,0 +1,10 @@
+name: email_env_advanced
+description: Advanced email triage with priority and spam detection
+version: 0.1
+
+entrypoint: email_env:EmailEnv
+
+tasks:
+  - name: easy
+  - name: medium
+  - name: hard
