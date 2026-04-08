@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # OpenEnv Email Triage Advanced
 
 This project implements a real-world Email Triage environment using the OpenEnv framework. It simulates how support teams process incoming emails by classifying, prioritizing, and taking appropriate actions.
@@ -61,3 +62,17 @@ Optional reply text can be included.
 ```bash
 docker build -t email-env .
 docker run -p 7860:7860 email-env
+=======
+---
+title: Openenv Email Triage Advanced
+emoji: 🐠
+colorFrom: pink
+colorTo: purple
+sdk: docker
+pinned: false
+license: mit
+short_description: 'An OpenEnv-compliant environment that simulates real-world '
+---
+
+Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+>>>>>>> c73315c65f7684f43bad4ff6a83d5afe6d7ecbad
