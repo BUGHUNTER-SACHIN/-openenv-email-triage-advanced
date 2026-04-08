@@ -5,7 +5,8 @@ from openai import OpenAI
 from email_env import EmailEnv
 from models import Action
 
-API_KEY = os.getenv("HF_TOKEN")
+# ✅ Correct env variables (as per checklist)
+HF_TOKEN = os.getenv("HF_TOKEN")
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
 
@@ -35,10 +36,10 @@ def log_end(success, steps, score, rewards):
 
 
 async def main():
-    # OpenAI client (required by rules, even if not used)
+    # ✅ OpenAI client (required even if not used)
     client = None
-    if API_KEY:
-        client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
+    if HF_TOKEN:
+        client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
 
     env = EmailEnv("medium")
 
@@ -52,7 +53,7 @@ async def main():
     for step in range(1, MAX_STEPS + 1):
         obs = result.observation.email
 
-        # deterministic heuristic (SAFE)
+        # ✅ deterministic safe heuristic
         if "win" in obs.subject.lower() or "crypto" in obs.subject.lower():
             action = Action(email_id=obs.id, action_type="mark_spam")
         elif obs.priority == "high":
@@ -60,8 +61,8 @@ async def main():
         else:
             action = Action(email_id=obs.id, action_type="reply")
 
-        # 🔥 FIXED ACTION FORMAT
-        action_str = f"{action.action_type}(email_id={action.email_id})"
+        # ✅ validator-friendly action format
+        action_str = f"email_id={action.email_id} action_type='{action.action_type}'"
 
         result = await env.step(action)
 
@@ -76,7 +77,7 @@ async def main():
         if done:
             break
 
-    # 🔥 FIXED SCORE (correct normalization)
+    # ✅ correct score normalization
     if len(rewards) > 0:
         score = sum(rewards) / len(rewards)
     else:
