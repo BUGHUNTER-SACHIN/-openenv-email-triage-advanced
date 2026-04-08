@@ -1,8 +1,24 @@
-name: email_env_advanced
-description: Advanced email triage with priority and spam detection
-version: 0.1
+name: email_env
+description: Email triage environment for AI agents
+version: 1.0.0
 
-entrypoint: email_env:EmailEnv
+entrypoint:
+  module: email_env
+  class: EmailEnv
+
+api:
+  reset: /reset
+  step: /step
+  state: /state
+
+observation:
+  type: object
+
+action:
+  type: object
+
+reward:
+  type: number
 
 tasks:
   - name: easy
