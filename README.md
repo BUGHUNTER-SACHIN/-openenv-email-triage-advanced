@@ -6,7 +6,7 @@ colorTo: green
 sdk: docker
 pinned: false
 license: mit
-short_description: short_description: Email triage environment for AI agents
+short_description: Email triage environment for AI agents
 ---
 
 # OpenEnv Email Triage Advanced
