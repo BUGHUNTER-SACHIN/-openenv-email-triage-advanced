@@ -38,8 +38,11 @@ def log_end(success, steps, score, rewards):
 async def main():
     # ✅ OpenAI client (required even if not used)
     client = None
-    if HF_TOKEN:
-        client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
+    try:
+        if HF_TOKEN:
+            client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
+    except Exception:
+        client = None
 
     env = EmailEnv("medium")
 
