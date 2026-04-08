@@ -1,9 +1,4 @@
 from fastapi import FastAPI
-import sys
-import os
-
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-
 from email_env import EmailEnv
 from models import Action
 
@@ -13,23 +8,27 @@ env = EmailEnv("medium")
 
 
 @app.get("/")
-def home():
-    return {"status": "running"}
+def root():
+    return {"status": "Email Env Running"}
 
 
 @app.post("/reset")
 async def reset():
-    return await env.reset()
+    result = await env.reset()
+    return result
 
 
 @app.post("/step")
 async def step(action: Action):
-    return await env.step(action)
+    result = await env.step(action)
+    return result
 
-
-@app.get("/state")
-async def state():
-    return env.state()
 
 def main():
-    return app
+    import uvicorn
+    uvicorn.run("server.app:app", host="0.0.0.0", port=7860)
+
+
+
+if __name__ == "__main__":
+    main()
