@@ -1,0 +1,16 @@
+[project]
+name = "email-env"
+version = "0.1.0"
+description = "Email triage OpenEnv environment"
+authors = [
+    { name = "Sachin Singh" }
+]
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "openai"
+]
+
+[tool.setuptools]
+packages = ["."]
