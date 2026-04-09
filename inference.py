@@ -5,8 +5,7 @@ from openai import OpenAI
 from email_env import EmailEnv
 from models import Action
 
-# ✅ Match sample: try HF_TOKEN first, then API_KEY
-API_KEY = os.getenv("HF_TOKEN") or os.getenv("API_KEY")
+API_KEY = os.getenv("HF_TOKEN") or os.getenv("API_KEY") or "placeholder"  # ✅ NEVER None
 API_BASE_URL = os.getenv("API_BASE_URL") or "https://router.huggingface.co/v1"
 MODEL_NAME = os.getenv("MODEL_NAME") or "Qwen/Qwen2.5-72B-Instruct"
 
@@ -37,7 +36,6 @@ def log_end(success: bool, steps: int, score: float, rewards: List[float]) -> No
 
 
 def get_action_from_llm(client: OpenAI, obs) -> str:
-    """Call the LLM through the proxy to decide the action."""
     prompt = f"""You are an email triage assistant. Given this email, choose exactly one action.
 
 Email:
@@ -67,17 +65,21 @@ Action:"""
         print(f"[DEBUG] Model request failed: {exc}", flush=True)
         action_text = "reply"
 
-    # Validate — order matters (check mark_spam before spam)
     for valid in ["mark_spam", "escalate", "archive", "reply"]:
         if valid in action_text:
             return valid
 
-    return "reply"  # safe default
+    return "reply"
 
 
 async def main() -> None:
-    # ✅ Client init matching sample script pattern
-    client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
+    # ✅ Wrap client init in try/except so crashes are caught
+    try:
+        client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
+    except Exception as e:
+        print(f"[DEBUG] OpenAI client init failed: {e}", flush=True)
+        # Create with explicit string to avoid None issues
+        client = OpenAI(base_url=API_BASE_URL, api_key="placeholder")
 
     env = EmailEnv("medium")
     rewards: List[float] = []
@@ -95,7 +97,6 @@ async def main() -> None:
                 break
 
             obs = result.observation.email
-
             action_type = get_action_from_llm(client, obs)
             action = Action(email_id=obs.id, action_type=action_type)
             action_str = f"{action.action_type}(email_id={action.email_id})"
@@ -116,8 +117,10 @@ async def main() -> None:
         score = min(max(score, 0.0), 1.0)
         success = score > 0.3
 
+    except Exception as e:
+        print(f"[DEBUG] Runtime error: {e}", flush=True)
+
     finally:
-        # ✅ Match sample: always close env and always emit [END]
         try:
             await env.close()
         except Exception as e:
